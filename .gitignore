@@ -5,6 +5,8 @@
 *.so
 *.dylib
 
+hiarc
+hiarc-cli
 bin/*
 
 # Test binary, built with `go test -c`

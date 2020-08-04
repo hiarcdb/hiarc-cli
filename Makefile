@@ -1,4 +1,7 @@
 build:
+	go build -o hiarc main.go
+
+compile:
 	echo "Compiling for every OS and Platform"
 	GOOS=darwin GOARCH=386 go build -o bin/darwin/hiarc main.go
 	GOOS=freebsd GOARCH=386 go build -o bin/freebsd/hiarc main.go
