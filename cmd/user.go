@@ -24,8 +24,8 @@ package cmd
 import (
 	"encoding/json"
 	"log"
-	"net/http"
 
+	hiarcapi "github.com/hiarcdb/hiarc-cli/hiarc-api"
 	"github.com/spf13/cobra"
 )
 
@@ -40,26 +40,11 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		//https://medium.com/@masnun/making-http-requests-in-golang-dd123379efe7
+		result, err := hiarcapi.GetUser()
 
-		client := http.Client{}
-
-		req, err := http.NewRequest("GET", "http://localhost:5000/users/user-1", nil)
 		if err != nil {
 			log.Fatalln(err)
 		}
-
-		req.Header.Set("X-Hiarc-Api-Key", "adminkey")
-		req.Header.Set("Content-type", "application/json")
-		resp, err := client.Do(req)
-		if err != nil {
-			log.Fatalln(err)
-		}
-
-		defer resp.Body.Close()
-
-		var result map[string]interface{}
-		json.NewDecoder(resp.Body).Decode(&result)
 
 		jsonData, err := json.MarshalIndent(result, "", "    ")
 
