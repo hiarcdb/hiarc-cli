@@ -2,6 +2,7 @@ package hiarcapi
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 )
 
@@ -9,8 +10,8 @@ import (
 
 var client = http.Client{}
 
-func GetUser() (map[string]interface{}, error) {
-	req, err := http.NewRequest("GET", "http://localhost:5000/users/user-1", nil)
+func GetUser(key string) (map[string]interface{}, error) {
+	req, err := http.NewRequest("GET", fmt.Sprintf("http://localhost:5000/users/%s", key), nil)
 	if err != nil {
 		return nil, err
 	}
