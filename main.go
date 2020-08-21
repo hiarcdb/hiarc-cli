@@ -21,8 +21,11 @@ THE SOFTWARE.
 */
 package main
 
-import "github.com/hiarcdb/hiarc-cli/cmd"
+import (
+	"github.com/hiarcdb/hiarc-cli/cmd"
+)
 
 func main() {
+	configuration := openapi.NewConfiguration()
 	cmd.Execute()
 }
