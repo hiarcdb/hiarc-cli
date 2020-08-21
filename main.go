@@ -23,7 +23,7 @@ package main
 
 import (
 	"github.com/hiarcdb/hiarc-cli/cmd"
-	openapi "github.com/hiarcdb/hiarc-go-sdk/openapi"
+	openapi "github.com/hiarcdb/hiarc-go-sdk"
 )
 
 func main() {
