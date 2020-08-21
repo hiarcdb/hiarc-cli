@@ -11,6 +11,12 @@ import (
 func GetUserOpenApi(key string) (*openapi.User, error) {
 
 	configuration := openapi.NewConfiguration()
+	// configuration.Servers = openapi.ServerConfigurations{
+	// 	{
+	// 		URL:         "http://localhost:5000",
+	// 		Description: "Localhost",
+	// 	},
+	// }
 	configuration.AddDefaultHeader("X-Hiarc-Api-Key", "adminkey")
 	configuration.AddDefaultHeader("Content-type", "application/json")
 
