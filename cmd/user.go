@@ -41,7 +41,7 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		result, err := hiarcapi.GetUser("user-1")
+		result, err := hiarcapi.GetUserOpenApi("user-1")
 
 		if err != nil {
 			log.Fatalln(err)
