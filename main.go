@@ -22,11 +22,32 @@ THE SOFTWARE.
 package main
 
 import (
+	"context"
+	"encoding/json"
+	"fmt"
+	"log"
+	"os"
+
 	"github.com/hiarcdb/hiarc-cli/cmd"
-	openapi "github.com/hiarcdb/hiarc-go-sdk"
+	openapiclient "github.com/hiarcdb/hiarc-go-sdk"
 )
 
 func main() {
-	configuration := openapi.NewConfiguration()
+	key := "user-1" // string | Key of user to get
+
+	configuration := openapiclient.NewConfiguration()
+	configuration.AddDefaultHeader("X-Hiarc-Api-Key", "adminkey")
+	configuration.AddDefaultHeader("Content-type", "application/json")
+
+	apiClient := openapiclient.NewAPIClient(configuration)
+	user, r, err := apiClient.UserApi.GetUser(context.Background(), key).Execute()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when calling `UserApi.GetUser``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+	}
+
+	jsonData, err := json.MarshalIndent(user, "", "    ")
+	log.Println(string(jsonData))
+
 	cmd.Execute()
 }
