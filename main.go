@@ -25,6 +25,8 @@ import (
 	"github.com/hiarcdb/hiarc-cli/cmd"
 )
 
+//openapi-generator generate -i openapi.yaml -g go-experimental -o ~/go/src/github.com/hiarcdb/hiarc-go-sdk/
+
 func main() {
 	cmd.Execute()
 }
