@@ -22,11 +22,19 @@ THE SOFTWARE.
 package cmd
 
 import (
+	"context"
 	"encoding/json"
+	"fmt"
 	"log"
+	"os"
 
-	hiarcapi "github.com/hiarcdb/hiarc-cli/hiarc-api"
+	hiarc "github.com/hiarcdb/hiarc-go-sdk"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
+)
+
+var (
+	key string
 )
 
 // userCmd represents the user command
@@ -40,14 +48,29 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-
-		result, err := hiarcapi.GetUserOpenApi("user-1")
-
-		if err != nil {
-			log.Fatalln(err)
+		configuration := hiarc.NewConfiguration()
+		configuration.Servers = hiarc.ServerConfigurations{
+			{
+				URL:         viper.GetString("url"),
+				Description: "Localhost",
+			},
 		}
+		configuration.AddDefaultHeader("X-Hiarc-Api-Key", viper.GetString("adminKey"))
+		configuration.AddDefaultHeader("Content-type", "application/json")
 
-		jsonData, err := json.MarshalIndent(result, "", "    ")
+		apiClient := hiarc.NewAPIClient(configuration)
+		user, r, err := apiClient.UserApi.GetUser(context.Background(), key).Execute()
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error when calling `UserApi.GetUser``: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+		}
+		// result, err := hiarcapi.GetUserOpenApi("user-1")
+
+		// if err != nil {
+		// 	log.Fatalln(err)
+		// }
+
+		jsonData, err := json.MarshalIndent(user, "", "    ")
 
 		log.Println(string(jsonData))
 	},
@@ -55,7 +78,8 @@ to quickly create a Cobra application.`,
 
 func init() {
 	rootCmd.AddCommand(userCmd)
-
+	userCmd.Flags().StringVar(&key, "key", "", "User key (required)")
+	userCmd.MarkFlagRequired("key")
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command

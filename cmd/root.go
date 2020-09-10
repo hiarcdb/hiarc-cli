@@ -27,11 +27,14 @@ import (
 
 	"github.com/spf13/cobra"
 
-	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/viper"
 )
 
 var cfgFile string
+
+const (
+	HiarcCredentialsPathEnvVar = "HIARC_CREDENTIALS_FILE"
+)
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -59,12 +62,12 @@ func Execute() {
 
 func init() {
 	cobra.OnInitialize(initConfig)
-
+	initConfig()
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.hiarc.yaml)")
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.hiarc/config.json)")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
@@ -76,17 +79,13 @@ func initConfig() {
 	if cfgFile != "" {
 		// Use config file from the flag.
 		viper.SetConfigFile(cfgFile)
+	} else if os.Getenv(HiarcCredentialsPathEnvVar) != "" {
+		viper.SetConfigFile(os.Getenv(HiarcCredentialsPathEnvVar))
 	} else {
-		// Find home directory.
-		home, err := homedir.Dir()
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
-		}
-
+		cfg := NewDefaultHiarcConfig()
 		// Search config in home directory with name ".hiarc" (without extension).
-		viper.AddConfigPath(home)
-		viper.SetConfigName(".hiarc")
+		viper.AddConfigPath(cfg.GetConfigPath())
+		viper.SetConfigName("config")
 	}
 
 	viper.AutomaticEnv() // read in environment variables that match
