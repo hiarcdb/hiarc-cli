@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"bytes"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
@@ -21,12 +23,18 @@ const (
 var (
 	url      string
 	adminKey string
+	profile  string
 )
 
+type HiarcConfigValues struct {
+	Url         string `json:"url"`
+	AdminKey    string `json:"adminKey"`
+	ProfileName string `json:"profile"`
+}
+
 type HiarcConfig struct {
-	Url      string      `json:"url"`
-	AdminKey string      `json:"adminKey"`
-	cfg      *ConfigPath `json:"-"`
+	Configs map[string]*HiarcConfigValues `json:"configs"`
+	cfg     *ConfigPath                   `json:"-"`
 }
 
 type ConfigPath struct {
@@ -53,22 +61,49 @@ func NewDefaultConfigPath() *ConfigPath {
 
 func NewDefaultHiarcConfig() *HiarcConfig {
 	return &HiarcConfig{
-		cfg: NewDefaultConfigPath(),
+		Configs: make(map[string]*HiarcConfigValues),
+		cfg:     NewDefaultConfigPath(),
 	}
 }
 
 func NewHiarcConfig(cp ConfigPath) *HiarcConfig {
 	return &HiarcConfig{
-		cfg: &cp,
+		Configs: make(map[string]*HiarcConfigValues),
+		cfg:     &cp,
 	}
 }
 
-func (hc *HiarcConfig) AddEditUrl(url string) {
-	hc.Url = url
+func (hc *HiarcConfig) AddNewConfig(adminKey string, url string, profile string) {
+	if profile == "" {
+		profile = "default"
+	}
+	if v, ok := hc.Configs[profile]; ok {
+		v.Url = url
+		v.AdminKey = adminKey
+	} else {
+		hc.Configs[profile] = &HiarcConfigValues{
+			Url:         url,
+			AdminKey:    adminKey,
+			ProfileName: profile,
+		}
+	}
+}
+func (hc *HiarcConfig) AddEditUrl(url string, profile string) {
+	if profile == "" {
+		profile = "default"
+	}
+	if v, ok := hc.Configs[profile]; ok {
+		v.Url = url
+	}
 }
 
-func (hc *HiarcConfig) AddEditAdminKey(key string) {
-	hc.AdminKey = key
+func (hc *HiarcConfig) AddEditAdminKey(key string, profile string) {
+	if profile == "" {
+		profile = "default"
+	}
+	if v, ok := hc.Configs[profile]; ok {
+		v.AdminKey = key
+	}
 }
 
 func (hc *HiarcConfig) GetConfigPath() string {
@@ -92,41 +127,117 @@ func MakeCredentialsFolderIfNotExists(path string) error {
 
 var configCmd = &cobra.Command{
 	Use:   "config",
-	Short: "do something aginst configuration",
-	Long: `A
-	multiline
-	description`,
-	Run: nil,
+	Short: "do something against configuration",
+	Run:   nil,
 }
 
 var initConfigCmd = &cobra.Command{
 	Use:   "init",
 	Short: "create your config file",
 	Run: func(cmd *cobra.Command, args []string) {
-		cfg := NewHiarcConfig(*NewDefaultConfigPath())
+		cfg := NewDefaultHiarcConfig()
 		fmt.Println(url)
 		fmt.Println(adminKey)
-		viper.Set("url", url)
-		viper.Set("adminKey", adminKey)
+		cfg.AddNewConfig(adminKey, url, profile)
+		for key, value := range cfg.Configs {
+			viper.Set(key, value)
+		}
 		if err := MakeCredentialsFolderIfNotExists(cfg.GetConfigPath()); err != nil {
 			fmt.Println("Something went wrong creating the credentials folder.")
 		}
-		if err := viper.WriteConfig(); err != nil {
+		if err := viper.SafeWriteConfigAs(cfg.GetConfigFilePath()); err != nil {
 			log.Fatal(err)
 		} else {
 			fmt.Println("Config created")
 		}
 	},
 }
+var addConfigCmd = &cobra.Command{
+	Use:   "add [profile name]",
+	Short: "add a new profile to your config file",
+	Args:  cobra.ExactArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+		cfg := NewDefaultHiarcConfig()
+		c := viper.AllSettings()
+		fmt.Println(c)
+		for p := range c {
+			fmt.Println(c[p])
+			jsonbody, err := json.Marshal(c[p])
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+			config := HiarcConfigValues{}
+			if err := json.Unmarshal(jsonbody, &config); err != nil {
+				fmt.Println(err)
+				return
+			}
+			cfg.AddNewConfig(config.AdminKey, config.Url, config.ProfileName)
+		}
+
+		cfg.AddNewConfig(adminKey, url, args[0])
+		fmt.Println(cfg)
+		for key, value := range cfg.Configs {
+			viper.Set(key, value)
+		}
+		if err := MakeCredentialsFolderIfNotExists(cfg.GetConfigPath()); err != nil {
+			fmt.Println("Something went wrong creating the credentials folder.")
+		}
+		if err := viper.WriteConfig(); err != nil {
+			log.Fatal(err)
+		} else {
+			fmt.Println("Config profile added.")
+		}
+	},
+}
+
+var deleteConfigCmd = &cobra.Command{
+	Use:   "delete [profile name]",
+	Short: "delete a profile from your config file",
+	Args:  cobra.ExactArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+		dp := viper.Get(args[0])
+		if dp == nil {
+			fmt.Println("Couldn't find this profile")
+		} else {
+			configMap := viper.AllSettings()
+			delete(configMap, args[0])
+			encodedConfig, _ := json.MarshalIndent(configMap, "", " ")
+			err := viper.ReadConfig(bytes.NewReader(encodedConfig))
+			if err != nil {
+				log.Fatal(err)
+			}
+			if err := viper.WriteConfig(); err != nil {
+				log.Fatal(err)
+			} else {
+				fmt.Println("Config profile deleted.")
+			}
+		}
+	},
+}
 
 var viewConfigCmd = &cobra.Command{
-	Use:   "view",
-	Short: "view your config file",
+	Use:   "view [profile name]",
+	Short: "view a profile in your config file",
+	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		viper.ReadInConfig()
-		url := viper.Get("url")
-		fmt.Println("URL:")
-		fmt.Println(url)
+		p := viper.Get(args[0])
+		if p == nil {
+			fmt.Println(fmt.Sprintf("Couldn't find a profile named %s", args[0]))
+		} else {
+			encodedConfig, _ := json.MarshalIndent(p, "", " ")
+			log.Println(string(encodedConfig))
+		}
+	},
+}
+
+var viewAllConfigCmd = &cobra.Command{
+	Use:   "all",
+	Short: "view all of your configs",
+	Run: func(cmd *cobra.Command, args []string) {
+		configMap := viper.AllSettings()
+		encodedConfig, _ := json.MarshalIndent(configMap, "", " ")
+		log.Println(string(encodedConfig))
 	},
 }
 
@@ -155,16 +266,50 @@ var setUrlConfigCmd = &cobra.Command{
 		return nil
 	},
 }
+var setAdminKeyConfigCmd = &cobra.Command{
+	Use:   "adminKey",
+	Short: "set an admin key in your config file",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		if len(args) == 0 {
+			return errors.New("Needs your admin key as argument")
+		}
+		adminKey := args[0]
+		viper.Set("adminKey", adminKey)
+		if err := viper.WriteConfig(); err != nil {
+			log.Fatal(err)
+		} else {
+			fmt.Println("Admin key updated.")
+		}
+		return nil
+	},
+}
 
 func init() {
 	rootCmd.AddCommand(configCmd)
 	configCmd.AddCommand(initConfigCmd)
 	configCmd.AddCommand(viewConfigCmd)
 	configCmd.AddCommand(setConfigCmd)
+	configCmd.AddCommand(addConfigCmd)
+	configCmd.AddCommand(deleteConfigCmd)
+
 	setConfigCmd.AddCommand(setUrlConfigCmd)
+	setConfigCmd.AddCommand(setAdminKeyConfigCmd)
+
+	viewConfigCmd.AddCommand(viewAllConfigCmd)
 
 	initConfigCmd.Flags().StringVar(&url, "url", "", "Hiarc API URL (required)")
 	initConfigCmd.MarkFlagRequired("url")
 	initConfigCmd.Flags().StringVar(&adminKey, "adminKey", "", "Hiarc Admin Key (required)")
 	initConfigCmd.MarkFlagRequired("adminKey")
+	initConfigCmd.Flags().StringVar(&profile, "profile", "default", "Hiarc Profile")
+
+	addConfigCmd.Flags().StringVar(&url, "url", "", "Hiarc API URL (required)")
+	addConfigCmd.MarkFlagRequired("url")
+	addConfigCmd.Flags().StringVar(&adminKey, "adminKey", "", "Hiarc Admin Key (required)")
+	addConfigCmd.MarkFlagRequired("adminKey")
+	// addConfigCmd.Flags().StringVar(&profile, "profile", "", "Hiarc Profile name")
+	// addConfigCmd.MarkFlagRequired("profile")
+
+	setUrlConfigCmd.Flags().StringVar(&profile, "profile", "default", "Hiarc Profile")
+	setAdminKeyConfigCmd.Flags().StringVar(&profile, "profile", "default", "Hiarc Profile")
 }

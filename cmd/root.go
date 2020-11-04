@@ -31,6 +31,8 @@ import (
 )
 
 var cfgFile string
+var profileNameFlag string
+var asUserFlag string
 
 const (
 	HiarcCredentialsPathEnvVar = "HIARC_CREDENTIALS_FILE"
@@ -68,6 +70,9 @@ func init() {
 	// will be global for your application.
 
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.hiarc/config.json)")
+	rootCmd.PersistentFlags().StringVar(&profileNameFlag, "profile", "default", "profile name for config (automatically set to \"default\")")
+	rootCmd.PersistentFlags().StringVar(&asUserFlag, "as-user", "", "user to impersonate")
+	// viper.BindPFlag("cli_profile_setting", rootCmd.PersistentFlags().Lookup("profile"))
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
@@ -88,7 +93,7 @@ func initConfig() {
 		viper.SetConfigName("config")
 	}
 
-	viper.AutomaticEnv() // read in environment variables that match
+	// viper.AutomaticEnv() // read in environment variables that match
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
