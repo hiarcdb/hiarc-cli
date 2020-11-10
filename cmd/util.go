@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 
 	hiarc "github.com/allenmichael/hiarcgo"
@@ -48,4 +49,30 @@ func ConvertQueryToObject(q string) (map[string]interface{}, error) {
 		return nil, err
 	}
 	return qo, nil
+}
+func IsValidAccessLevel(a string) bool {
+	levels := []string{string(hiarc.CO_OWNER), string(hiarc.READ_WRITE), string(hiarc.READ_ONLY), string(hiarc.UPLOAD_ONLY)}
+	for _, item := range levels {
+		if item == a {
+			return true
+		}
+	}
+	return false
+}
+
+func GetAccessLevelFromString(a string) (hiarc.AccessLevel, error) {
+	if a == string(hiarc.CO_OWNER) {
+		return hiarc.CO_OWNER, nil
+	}
+	if a == string(hiarc.READ_WRITE) {
+		return hiarc.READ_WRITE, nil
+	}
+	if a == string(hiarc.READ_ONLY) {
+		return hiarc.READ_ONLY, nil
+	}
+	if a == string(hiarc.UPLOAD_ONLY) {
+		return hiarc.UPLOAD_ONLY, nil
+	}
+	var emp hiarc.AccessLevel
+	return emp, errors.New("Couldn't convert this Access Level")
 }
