@@ -14,7 +14,7 @@ hiarc file create file-1 --name 'file-1.txt' --path '~/Desktop/a-file.txt' --des
 hiarc file get file-1
 ```
 ```bash
-hiarc file update file-1 --name 'file-1-changed.txt' --description 'a new description' --metadata '{"department": "sales"}' --
+hiarc file update file-1 --name 'file-1-changed.txt' --description 'a new description' --metadata '{"department": "sales"}'
 ```
 ```bash
 hiarc file delete file-1
