@@ -87,3 +87,31 @@ hiarc user update user-1 --metadata '{"quotaCarrying": true}'
 ```bash
 hiarc user find --query '{"prop": "department", "op": "starts with", "value": "sal" }' --query '{"bool": "and"}' --query '{"prop": "quotaCarrying", "op": "=", "value": true}'
 ```
+### Groups
+```bash
+hiarc group create group-1 --name "group-1" --metadata '{"department": "sales"}'
+```
+```bash
+hiarc group get group-1
+```
+```bash
+hiarc group get all
+```
+```bash
+hiarc group get all current --as-user user-1
+```
+```bash
+hiarc user get for-user user-1
+```
+```bash
+hiarc user update group-1 --metadata '{"quotaCarrying": true}'
+```
+```bash
+hiarc group add-user group-1 user-1
+```
+```bash
+hiarc group find --query '{"prop": "department", "op": "starts with", "value": "sal" }' --query '{"bool": "and"}' --query '{"prop": "quotaCarrying", "op": "=", "value": true}'
+```
+```bash
+hiarc group delete group-1
+```
