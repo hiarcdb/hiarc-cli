@@ -40,12 +40,11 @@ var createGroupCmd = &cobra.Command{
 			}
 			cgr.Metadata = md
 		}
-		log.Println("Processed metadata")
 		if groupName != "" {
-			cgr.Name = fileName
+			cgr.Name = groupName
 		}
 		if groupDescription != "" {
-			cgr.Description = fileDescription
+			cgr.Description = groupDescription
 		}
 		group, r, err := hiarcClient.GroupApi.CreateGroup(context.Background(), cgr)
 		if err != nil {
@@ -148,10 +147,10 @@ var updateGroupCmd = &cobra.Command{
 			ugr.Metadata = md
 		}
 		if groupName != "" {
-			ugr.Name = fileName
+			ugr.Name = groupName
 		}
 		if groupDescription != "" {
-			ugr.Description = fileDescription
+			ugr.Description = groupDescription
 		}
 		group, r, err := hiarcClient.GroupApi.UpdateGroup(context.Background(), args[0], ugr)
 		if err != nil {
