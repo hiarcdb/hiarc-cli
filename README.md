@@ -8,7 +8,7 @@ make compile
 ## Usage
 ### Files
 ```bash
-hiarc file create file-1 --name 'file-1.txt' --path '~/Desktop/a-file.txt' --description 'a description' --metadata '{"department": "engineering"}' --storage-service 'aws-us-east-1-bucket-name'
+hiarc file create file-1 --name 'file-1.txt' --path ~/Desktop/a-file.txt --description 'a description' --metadata '{"department": "engineering"}' --storage-service 'aws-us-east-1-bucket-name'
 ```
 ```bash
 hiarc file get file-1
@@ -21,7 +21,7 @@ hiarc file delete file-1
 ```
 ```bash
 # Only use --name to change the file's name on the local system to which you are downloading
-hiarc file download file-1 --path '~/Downloads' --name 'file-1-different-local-name.txt'
+hiarc file download file-1 --path ~/Downloads --name 'file-1-different-local-name.txt'
 ```
 ```bash
 hiarc file attach new-key --storage-id 'object-key-in-bucket' --storage-service 'aws-us-east-bucket'
@@ -36,7 +36,7 @@ hiarc file direct-download file-1
 hiarc file direct-upload --expires-in 600 --storage-service 'aws-us-east-bucket'
 ```
 ```bash
-hiarc file add-version file-1 --name 'file-1.txt' --path './new-a-file-1.txt' --storage-service 'azure-blob'
+hiarc file add-version file-1 --name 'file-1.txt' --path ./new-a-file-1.txt --storage-service 'azure-blob'
 ```
 ```bash
 hiarc file add-user file-1 user-1 CO_OWNER
@@ -61,6 +61,49 @@ hiarc file get collections 123
 ```
 ```bash
 hiarc file get retention-policies 123
+```
+### Collections
+```bash
+hiarc collection create collection-1 --name 'collection 1' --description 'a collection of files and children' --metadata '{"department": "marketing"}'
+```
+```bash
+hiarc collection update collection-1 --metadata '{"important": true, "cost": 50000}'
+```
+```bash
+hiarc collection get collection-1
+```
+```bash
+hiarc collection get all
+```
+```bash
+hiarc collection get children collection-1
+```
+```bash
+hiarc collection get files collection-2
+```
+```bash
+hiarc collection get items collection-1
+```
+```bash
+hiarc collection add-user collection-1 user-1 read_only
+```
+```bash
+hiarc collection add-group collection-1 group-1 co_owner
+```
+```bash
+hiarc collection add-file collection-1 file-1
+```
+```bash
+hiarc collection add-child collection-1 collection-2
+```
+```bash
+hiarc collection find --query '{"prop": "department", "op": "starts with", "value": "mark" }' --query '{"bool": "and"}' --query '{"prop": "cost", "op": ">", "value": 1000}'
+```
+```bash
+hiarc collection remove-file collection-1 file-1
+```
+```bash
+hiarc collection delete collection-1
 ```
 ### Users
 ```bash
