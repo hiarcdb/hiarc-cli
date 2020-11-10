@@ -7,6 +7,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"path/filepath"
 	"strings"
 
 	hiarc "github.com/allenmichael/hiarcgo"
@@ -123,7 +124,7 @@ var getFileCollectionsCmd = &cobra.Command{
 
 		collections, r, err := hiarcClient.FileApi.GetCollectionsForFile(context.Background(), args[0], &opts)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error when calling `FileApi.GetRetentionPolicies``: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Error when calling `FileApi.GetCollectionsForFile``: %v\n", err)
 			fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 		}
 		jsonData, err := json.MarshalIndent(collections, "", "    ")
@@ -174,7 +175,7 @@ var getDirectUploadCmd = &cobra.Command{
 
 		url, r, err := hiarcClient.FileApi.CreateDirectUploadUrl(context.Background(), du, &opts)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error when calling `FileApi.GetRetentionPolicies``: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Error when calling `FileApi.CreateDirectUploadUrl``: %v\n", err)
 			fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 		}
 		jsonData, err := json.MarshalIndent(url, "", "    ")
@@ -221,7 +222,7 @@ var createFileCmd = &cobra.Command{
 
 		file, r, err := hiarcClient.FileApi.CreateFile(context.Background(), filePathUpload, fileName, cf, &opts)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error when calling `FileApi.GetFile``: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Error when calling `FileApi.CreateFile``: %v\n", err)
 			fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 		}
 		jsonData, err := json.MarshalIndent(file, "", "    ")
@@ -281,7 +282,7 @@ var copyFileCmd = &cobra.Command{
 
 		file, r, err := hiarcClient.FileApi.CopyFile(context.Background(), args[0], cr, &opts)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error when calling `FileApi.AttachToExisitingFIle``: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Error when calling `FileApi.CopyFile``: %v\n", err)
 			fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 		}
 		jsonData, err := json.MarshalIndent(file, "", "    ")
@@ -444,15 +445,35 @@ var downloadFileCmd = &cobra.Command{
 		if asUser != "" && err == nil {
 			opts.XHiarcUserKey = optional.NewString(asUser)
 		}
-
-		out, err := os.Create(filePathDownload)
+		getOpts := hiarc.GetFileOpts{}
+		if asUser != "" && err == nil {
+			opts.XHiarcUserKey = optional.NewString(asUser)
+		}
+		s, err := os.Stat(filePathDownload)
 		if err != nil {
 			log.Fatal(err)
 		}
+		if s.IsDir() != true {
+			log.Fatal("Download path must be a directory.")
+		}
+		if fileName == "" {
+			f, r, err := hiarcClient.FileApi.GetFile(context.Background(), args[0], &getOpts)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "Error when calling `FileApi.GetFile``: %v\n", err)
+				fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+			}
+			fileName = f.Name
+		}
+
 		fib, r, err := hiarcClient.FileApi.DownloadFile(context.Background(), args[0], &opts)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error when calling `FileApi.GetFile``: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Error when calling `FileApi.DownloadFile``: %v\n", err)
 			fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+		}
+
+		out, err := os.Create(filepath.Join(filePathDownload, fileName))
+		if err != nil {
+			log.Fatal(err)
 		}
 		_, err = io.Copy(out, fib)
 		if err != nil {
@@ -491,7 +512,31 @@ var updateFileCmd = &cobra.Command{
 
 		file, r, err := hiarcClient.FileApi.UpdateFile(context.Background(), args[0], uf, &opts)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error when calling `FileApi.GetFile``: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Error when calling `FileApi.UpdateFile``: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+		}
+		jsonData, err := json.MarshalIndent(file, "", "    ")
+		log.Println(string(jsonData))
+	},
+}
+
+var filterFilesCmd = &cobra.Command{
+	Use:   "filter [list of file keys]",
+	Short: "Filter which files a user can access",
+	Args:  cobra.MinimumNArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+		hiarcClient := ConfigureHiarcClient()
+		asUser, err := rootCmd.Flags().GetString("as-user")
+		opts := hiarc.FilterAllowedFilesOpts{}
+		if asUser != "" && err == nil {
+			opts.XHiarcUserKey = optional.NewString(asUser)
+		}
+
+		fr := hiarc.AllowedFilesRequest{Keys: args}
+
+		file, r, err := hiarcClient.FilesApi.FilterAllowedFiles(context.Background(), fr, &opts)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error when calling `FileApi.FilterAllowedFiles``: %v\n", err)
 			fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 		}
 		jsonData, err := json.MarshalIndent(file, "", "    ")
@@ -538,6 +583,7 @@ func init() {
 	fileCmd.AddCommand(getDirectDownloadCmd)
 	fileCmd.AddCommand(getDirectUploadCmd)
 	fileCmd.AddCommand(copyFileCmd)
+	fileCmd.AddCommand(filterFilesCmd)
 
 	getFileCmd.AddCommand(getFileVersionsCmd)
 	getFileCmd.AddCommand(getFileRetentionPoliciesCmd)
@@ -568,6 +614,7 @@ func init() {
 	getDirectUploadCmd.Flags().StringVar(&fileStorageService, "storage-service", "", "Service used to store file")
 	getDirectUploadCmd.Flags().Int32Var(&directUploadExpires, "expires-in", 0, "When upload link expires in seconds")
 
+	downloadFileCmd.Flags().StringVar(&fileName, "name", "", "Change file name on local system when downloading")
 	downloadFileCmd.Flags().StringVar(&filePathDownload, "path", "", "Local file path to download (required)")
 	downloadFileCmd.MarkFlagRequired("path")
 }
