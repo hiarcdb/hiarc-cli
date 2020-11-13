@@ -6,6 +6,16 @@ make build
 make compile
 
 ## Usage
+### Environment Variables
+`HIARC_CREDENTIALS_FILE` 
+* use this variable to store a file path, e.g. `~/Desktop/hiarc.json`
+* the CLI will load the credentials file from this path until this environment variable is `unset`
+
+`HIARC_PROFILE`
+* use this varible to store a Hiarc credential profile
+* the CLI will always reference the profile in this environment variable until it is `unset`. 
+* *Note*: Using the global --profile flag will override the profile set in `HIARC_PROFILE`
+
 ### Files
 ```bash
 hiarc file create file-1 --name 'file-1.txt' --path ~/Desktop/a-file.txt --description 'a description' --metadata '{"department": "engineering"}' --storage-service 'aws-us-east-1-bucket-name'
@@ -157,4 +167,76 @@ hiarc group find --query '{"prop": "department", "op": "starts with", "value": "
 ```
 ```bash
 hiarc group delete group-1
+```
+### Retention Policies
+```bash
+hiarc retention-policy create retention-1 --name 'contract retention policy' --description 'retention policy for all executed contracts' --metadata '{"department": "sales"}'
+```
+```bash
+hiarc retention-policy get retention-1
+```
+```bash
+hiarc retention-policy get all
+```
+```bash
+hiarc retention-policy update retention-1 --description 'this policy is only for executed sales contracts'
+```
+```bash
+hiarc retention-policy find --query '{"prop": "department", "op": "starts with", "value": "sal" }'
+```
+### Classifications
+```bash
+hiarc classification create classification-1 --name 'a classification' --description 'how to create a sample classification' --metadata '{"longText": "you can use this to contain different kinds of metadata"}'
+```
+```bash
+hiarc classification get classification-1
+```
+```bash
+hiarc classification get all
+```
+```bash
+hiarc classification update classification-1 --metadata '{"department": "engineering"}'
+```
+```bash
+hiarc classification find --query '{"prop": "longText", "op": "contains", "value":"different"}'
+```
+### Legal Holds
+```bash
+hiarc legal-hold create legalhold-1 --name 'legal hold example' --description 'a sample legal hold' --metadata '{"global": true}'
+```
+```bash
+hiarc legal-hold get legalhold-1
+```
+### Token
+```bash
+hiarc token create user-1
+``` 
+### Admin
+```bash
+hiarc admin init-db
+```
+```bash
+hiarc admin reset-db
+```
+### Configuration
+```bash
+hiarc config init --adminKey <key> --url <hiarc-url>
+```
+```bash
+hiarc config view default
+```
+```bash
+hiarc config view all
+```
+```bash
+hiarc config add sample-to-erase --url http://localhost:5000
+```
+```bash
+hiarc config delete sample-to-erase
+```
+```bash
+hiarc config set url default http://localhost:5000
+```
+```bash
+hiarc config set adminKey sample-to-erase 12345
 ```

@@ -22,7 +22,7 @@ THE SOFTWARE.
 package cmd
 
 import (
-	"fmt"
+	"log"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -30,12 +30,16 @@ import (
 	"github.com/spf13/viper"
 )
 
-var cfgFile string
-var profileNameFlag string
-var asUserFlag string
+var (
+	cfgFile         string
+	profileNameFlag string
+	asUserFlag      string
+	tokenFlag       string
+)
 
 const (
 	HiarcCredentialsPathEnvVar = "HIARC_CREDENTIALS_FILE"
+	HiarcProfileEnvVar         = "HIARC_PROFILE"
 )
 
 // rootCmd represents the base command when called without any subcommands
@@ -57,7 +61,7 @@ to quickly create a Cobra application.`,
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
+		log.Fatal(err)
 		os.Exit(1)
 	}
 }
@@ -72,6 +76,7 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.hiarc/config.json)")
 	rootCmd.PersistentFlags().StringVar(&profileNameFlag, "profile", "default", "profile name for config (automatically set to \"default\")")
 	rootCmd.PersistentFlags().StringVar(&asUserFlag, "as-user", "", "user to impersonate")
+	rootCmd.PersistentFlags().StringVar(&tokenFlag, "token", "", "token to use to call Hiarc")
 	// viper.BindPFlag("cli_profile_setting", rootCmd.PersistentFlags().Lookup("profile"))
 
 	// Cobra also supports local flags, which will only run
@@ -96,7 +101,7 @@ func initConfig() {
 	// viper.AutomaticEnv() // read in environment variables that match
 
 	// If a config file is found, read it in.
-	if err := viper.ReadInConfig(); err == nil {
-		fmt.Println("Using config file:", viper.ConfigFileUsed())
+	if err := viper.ReadInConfig(); err != nil {
+		log.Fatal(err)
 	}
 }
