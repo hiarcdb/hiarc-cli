@@ -212,6 +212,8 @@ github.com/hashicorp/memberlist v0.1.3/go.mod h1:ajVTdAv/9Im8oMAAj5G31PhhMCZJV2p
 github.com/hashicorp/serf v0.8.2/go.mod h1:6hOLApaqBFA1NXqRQAsxw9QxuDEvNxSQRwA/JwenrHc=
 github.com/hiarcdb/hiarc-go-sdk v0.0.0-20200822005708-3c20cc2a2ba6 h1:csrtkpR3yPfhJnN+LRIIS1u++/kTEL/aUc6EbvfTFks=
 github.com/hiarcdb/hiarc-go-sdk v0.0.0-20200822005708-3c20cc2a2ba6/go.mod h1:YCfgWLXpcEHrO4gsJmn/5IhCmP9Cuwij03r3nkq6OIg=
+github.com/hiarcdb/hiarc-go-sdk v0.0.1 h1:oD51AbN4uolTWv1ixI/cx5RE9EnsmxNkIzdG8NRCMMo=
+github.com/hiarcdb/hiarc-go-sdk v0.0.1/go.mod h1:Dd6eKWPGjJ6jdOO9esCHFYTuVLRYUzz8yiKRt6vph+4=
 github.com/ianlancetaylor/demangle v0.0.0-20181102032728-5e5cf60278f6/go.mod h1:aSSvb/t6k1mPoxDqO4vJh6VOCGPwU4O0C2/Eqndh1Sc=
 github.com/inconshreveable/mousetrap v1.0.0 h1:Z8tu5sraLXCXIcARxBp/8cbvlwVa7Z1NHg9XEKhtSvM=
 github.com/inconshreveable/mousetrap v1.0.0/go.mod h1:PxqpIevigyE2G7u3NXJIT2ANytuPF1OarO4DADm73n8=

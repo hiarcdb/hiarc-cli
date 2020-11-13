@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"os"
 
-	hiarc "github.com/allenmichael/hiarcgo"
+	hiarc "github.com/hiarcdb/hiarc-go-sdk"
 	"github.com/spf13/viper"
 )
 

@@ -10,7 +10,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	hiarc "github.com/allenmichael/hiarcgo"
+	hiarc "github.com/hiarcdb/hiarc-go-sdk"
 	"github.com/antihax/optional"
 	"github.com/spf13/cobra"
 )
