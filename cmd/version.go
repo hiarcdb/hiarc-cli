@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"fmt"
+	"log"
 
 	"github.com/spf13/cobra"
 )
@@ -11,7 +11,7 @@ var versionCmd = &cobra.Command{
 	Short: "Print the version number of Hiarc CLI",
 	Long:  `All software has versions. This is Hiarc's`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Hiarc CLI v0.1.0")
+		log.Println("Hiarc CLI v0.1.0")
 	},
 }
 

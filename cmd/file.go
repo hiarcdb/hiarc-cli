@@ -53,7 +53,7 @@ var getFileCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 		}
 		jsonData, err := json.MarshalIndent(file, "", "    ")
-		log.Println(string(jsonData))
+		fmt.Println(string(jsonData))
 	},
 }
 
@@ -78,7 +78,7 @@ var getFileVersionsCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 		}
 		jsonData, err := json.MarshalIndent(versions, "", "    ")
-		log.Println(string(jsonData))
+		fmt.Println(string(jsonData))
 	},
 }
 
@@ -103,7 +103,7 @@ var getFileRetentionPoliciesCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 		}
 		jsonData, err := json.MarshalIndent(policies, "", "    ")
-		log.Println(string(jsonData))
+		fmt.Println(string(jsonData))
 	},
 }
 
@@ -128,7 +128,7 @@ var getFileCollectionsCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 		}
 		jsonData, err := json.MarshalIndent(collections, "", "    ")
-		log.Println(string(jsonData))
+		fmt.Println(string(jsonData))
 	},
 }
 
@@ -150,7 +150,7 @@ var getDirectDownloadCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 		}
 		jsonData, err := json.MarshalIndent(url, "", "    ")
-		log.Println(string(jsonData))
+		fmt.Println(string(jsonData))
 	},
 }
 
@@ -179,7 +179,7 @@ var getDirectUploadCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 		}
 		jsonData, err := json.MarshalIndent(url, "", "    ")
-		log.Println(string(jsonData))
+		fmt.Println(string(jsonData))
 	},
 }
 
@@ -226,7 +226,7 @@ var createFileCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 		}
 		jsonData, err := json.MarshalIndent(file, "", "    ")
-		log.Println(string(jsonData))
+		fmt.Println(string(jsonData))
 	},
 }
 
@@ -259,7 +259,7 @@ var attachFileCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 		}
 		jsonData, err := json.MarshalIndent(file, "", "    ")
-		log.Println(string(jsonData))
+		fmt.Println(string(jsonData))
 	},
 }
 
@@ -286,7 +286,7 @@ var copyFileCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 		}
 		jsonData, err := json.MarshalIndent(file, "", "    ")
-		log.Println(string(jsonData))
+		fmt.Println(string(jsonData))
 	},
 }
 
@@ -320,7 +320,7 @@ var addVersionCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 		}
 		jsonData, err := json.MarshalIndent(file, "", "    ")
-		log.Println(string(jsonData))
+		fmt.Println(string(jsonData))
 	},
 }
 
@@ -352,7 +352,7 @@ var addGroupToFileCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 		}
 		jsonData, err := json.MarshalIndent(file, "", "    ")
-		log.Println(string(jsonData))
+		fmt.Println(string(jsonData))
 	},
 }
 
@@ -384,7 +384,7 @@ var addUserToFileCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 		}
 		jsonData, err := json.MarshalIndent(file, "", "    ")
-		log.Println(string(jsonData))
+		fmt.Println(string(jsonData))
 	},
 }
 
@@ -407,7 +407,7 @@ var addClassificationToFileCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 		}
 		jsonData, err := json.MarshalIndent(file, "", "    ")
-		log.Println(string(jsonData))
+		fmt.Println(string(jsonData))
 	},
 }
 
@@ -430,7 +430,7 @@ var addRetentionPolicyToFileCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 		}
 		jsonData, err := json.MarshalIndent(file, "", "    ")
-		log.Println(string(jsonData))
+		fmt.Println(string(jsonData))
 	},
 }
 
@@ -516,7 +516,7 @@ var updateFileCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 		}
 		jsonData, err := json.MarshalIndent(file, "", "    ")
-		log.Println(string(jsonData))
+		fmt.Println(string(jsonData))
 	},
 }
 
@@ -540,7 +540,7 @@ var filterFilesCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 		}
 		jsonData, err := json.MarshalIndent(file, "", "    ")
-		log.Println(string(jsonData))
+		fmt.Println(string(jsonData))
 	},
 }
 

@@ -58,7 +58,7 @@ var createCollectionCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 		}
 		jsonData, err := json.MarshalIndent(collection, "", "    ")
-		log.Println(string(jsonData))
+		fmt.Println(string(jsonData))
 	},
 }
 
@@ -80,7 +80,7 @@ var getCollectionCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 		}
 		jsonData, err := json.MarshalIndent(collection, "", "    ")
-		log.Println(string(jsonData))
+		fmt.Println(string(jsonData))
 	},
 }
 
@@ -101,7 +101,7 @@ var getAllCollectionsCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 		}
 		jsonData, err := json.MarshalIndent(collections, "", "    ")
-		log.Println(string(jsonData))
+		fmt.Println(string(jsonData))
 	},
 }
 
@@ -123,7 +123,7 @@ var getChildrenForCollectionCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 		}
 		jsonData, err := json.MarshalIndent(collection, "", "    ")
-		log.Println(string(jsonData))
+		fmt.Println(string(jsonData))
 	},
 }
 
@@ -145,7 +145,7 @@ var getFilesForCollectionCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 		}
 		jsonData, err := json.MarshalIndent(collection, "", "    ")
-		log.Println(string(jsonData))
+		fmt.Println(string(jsonData))
 	},
 }
 
@@ -167,7 +167,7 @@ var getItemsForCollectionCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 		}
 		jsonData, err := json.MarshalIndent(collection, "", "    ")
-		log.Println(string(jsonData))
+		fmt.Println(string(jsonData))
 	},
 }
 
@@ -203,7 +203,7 @@ var updateCollectionCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 		}
 		jsonData, err := json.MarshalIndent(collection, "", "    ")
-		log.Println(string(jsonData))
+		fmt.Println(string(jsonData))
 	},
 }
 
@@ -385,7 +385,7 @@ var findCollectionCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 		}
 		jsonData, err := json.MarshalIndent(fc, "", "    ")
-		log.Println(string(jsonData))
+		fmt.Println(string(jsonData))
 	},
 }
 

@@ -34,7 +34,6 @@ import (
 )
 
 var (
-	key             string
 	userName        string
 	userDescription string
 	userMetadata    string
@@ -76,7 +75,7 @@ var createUserCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 		}
 		jsonData, err := json.MarshalIndent(user, "", "    ")
-		log.Println(string(jsonData))
+		fmt.Println(string(jsonData))
 	},
 }
 
@@ -93,7 +92,7 @@ var getUserCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 		}
 		jsonData, err := json.MarshalIndent(user, "", "    ")
-		log.Println(string(jsonData))
+		fmt.Println(string(jsonData))
 	},
 }
 
@@ -109,7 +108,7 @@ var getAllUsersCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 		}
 		jsonData, err := json.MarshalIndent(user, "", "    ")
-		log.Println(string(jsonData))
+		fmt.Println(string(jsonData))
 	},
 }
 
@@ -140,7 +139,7 @@ var updateUserCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 		}
 		jsonData, err := json.MarshalIndent(user, "", "    ")
-		log.Println(string(jsonData))
+		fmt.Println(string(jsonData))
 	},
 }
 
@@ -179,7 +178,7 @@ var findUserCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 		}
 		jsonData, err := json.MarshalIndent(fu, "", "    ")
-		log.Println(string(jsonData))
+		fmt.Println(string(jsonData))
 	},
 }
 
@@ -200,7 +199,7 @@ var getCurrentUserCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 		}
 		jsonData, err := json.MarshalIndent(user, "", "    ")
-		log.Println(string(jsonData))
+		fmt.Println(string(jsonData))
 	},
 }
 
@@ -220,7 +219,7 @@ var getGroupsForUserCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 		}
 		jsonData, err := json.MarshalIndent(groups, "", "    ")
-		log.Println(string(jsonData))
+		fmt.Println(string(jsonData))
 	},
 }
 
@@ -242,7 +241,7 @@ var getGroupsForCurrentUserCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 		}
 		jsonData, err := json.MarshalIndent(groups, "", "    ")
-		log.Println(string(jsonData))
+		fmt.Println(string(jsonData))
 	},
 }
 

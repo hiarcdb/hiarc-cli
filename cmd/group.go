@@ -52,7 +52,7 @@ var createGroupCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 		}
 		jsonData, err := json.MarshalIndent(group, "", "    ")
-		log.Println(string(jsonData))
+		fmt.Println(string(jsonData))
 	},
 }
 
@@ -68,7 +68,7 @@ var getGroupCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 		}
 		jsonData, err := json.MarshalIndent(group, "", "    ")
-		log.Println(string(jsonData))
+		fmt.Println(string(jsonData))
 	},
 }
 
@@ -84,7 +84,7 @@ var getAllGroupsCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 		}
 		jsonData, err := json.MarshalIndent(groups, "", "    ")
-		log.Println(string(jsonData))
+		fmt.Println(string(jsonData))
 	},
 }
 
@@ -106,7 +106,7 @@ var getGroupsForUserGroupCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 		}
 		jsonData, err := json.MarshalIndent(group, "", "    ")
-		log.Println(string(jsonData))
+		fmt.Println(string(jsonData))
 	},
 }
 
@@ -127,7 +127,7 @@ var getGroupsCurrentUserCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 		}
 		jsonData, err := json.MarshalIndent(group, "", "    ")
-		log.Println(string(jsonData))
+		fmt.Println(string(jsonData))
 	},
 }
 
@@ -158,7 +158,7 @@ var updateGroupCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 		}
 		jsonData, err := json.MarshalIndent(group, "", "    ")
-		log.Println(string(jsonData))
+		fmt.Println(string(jsonData))
 	},
 }
 
@@ -212,7 +212,7 @@ var findGroupCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 		}
 		jsonData, err := json.MarshalIndent(fg, "", "    ")
-		log.Println(string(jsonData))
+		fmt.Println(string(jsonData))
 	},
 }
 

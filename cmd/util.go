@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"os"
 
 	hiarc "github.com/allenmichael/hiarcgo"
 	"github.com/spf13/viper"
@@ -13,6 +14,12 @@ func ConfigureHiarcClientWithValues(url string, adminKey string) *hiarc.APIClien
 	cfg := hiarc.NewConfiguration()
 	cfg.BasePath = url
 	cfg.AddDefaultHeader("X-Hiarc-Api-Key", adminKey)
+	return hiarc.NewAPIClient(cfg)
+}
+func ConfigureHiarcClientWithToken(url string, token string) *hiarc.APIClient {
+	cfg := hiarc.NewConfiguration()
+	cfg.BasePath = url
+	cfg.AddDefaultHeader("Authorization", fmt.Sprintf("Bearer %s", token))
 	return hiarc.NewAPIClient(cfg)
 }
 
@@ -30,7 +37,17 @@ func GetConfigValuesByProfile(profile string) (string, string) {
 
 func ConfigureHiarcClient() *hiarc.APIClient {
 	profile, _ := rootCmd.Flags().GetString("profile")
+	if profile == "default" {
+		k := os.Getenv(HiarcProfileEnvVar)
+		if k != "" {
+			profile = k
+		}
+	}
 	url, admin := GetConfigValuesByProfile(profile)
+	token, _ := rootCmd.Flags().GetString("token")
+	if token != "" {
+		return ConfigureHiarcClientWithToken(url, token)
+	}
 	return ConfigureHiarcClientWithValues(url, admin)
 }
 
